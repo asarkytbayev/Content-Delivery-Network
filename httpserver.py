@@ -3,17 +3,18 @@
 # Project 5: Roll Your Own CDN
 # @author Azamat Sarkytbayev
 # NU ID: 001873077
+# run: ./httpserver -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com
 #
 
 #!/usr/bin/env python3
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import http.client
-from sys import getsizeof, maxsize, argv, argc, exit
+from sys import getsizeof, maxsize, argv, exit
 import os
 from copy import deepcopy
 import socket
 
-if argc != 5:
+if len(argv) != 5:
     print("usage: ./httpserver -p <port> -o <origin>")
     exit()
 
@@ -26,10 +27,12 @@ if os.path.isdir(cache_dir) == False:
     os.mkdir(cache_dir)
 
 # team 6 port: 40006
-port = argv[2] 
+port = int(argv[2])
+# print("port: {}".format(port))
 
 # origin's ip: "54.158.114.217" 
-origin_ip = socket.gethostname(argv[4])
+origin_ip = socket.gethostbyname(argv[4])
+# print("origin ip: {}".format(origin_ip))
 
 # http connection with the origin
 conn = http.client.HTTPConnection(origin_ip) 

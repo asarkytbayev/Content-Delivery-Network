@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 httpserver.py -p $2 -o $4

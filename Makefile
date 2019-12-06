@@ -11,6 +11,20 @@
 CXX = g++
 CXXFLAGS = -std=c++11
 
+all: deployCDN runCDN stopCDN dnsserver httpserver
+
+deployCDN:
+	chmod +x deployCDN
+
+runCDN:
+	chmod +x runCDN
+
+stopCDN:
+	chmod +x stopCDN
+
+httpserver:
+	chmod +x httpserver
+
 dnsserver: main.o dnsserver.o
 	$(CXX) $(CXXFLAGS) dnsserver.o main.o -o dnsserver
 
