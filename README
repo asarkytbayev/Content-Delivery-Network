@@ -1,0 +1,19 @@
+DNS Server:  
+
+For this milestone, I've implemented a basic DNS server. The code is going to be tested  
+out using the url cs5700.example.com. I wasn't able to find this website, so my DNS server  
+simple sets the qr = 1, indicating a response, aa = 1, meaning that my server is authoratitive,  
+and finally rcode = 3, which means that domain doesn't exist.  
+  
+References:  
+1. https://www.binarytides.com/dns-query-code-in-c-with-linux-sockets/
+2. https://beej.us/guide/bgnet/html/#datagram  
+3. https://www.youtube.com/watch?v=ViTAg8YGI5Q  
+  
+How to run the server:  
+./dnsserver -p 40006 -n url  
+  
+How to test:  
+dig cs5700cdn.example.com @192.168.0.118 -p 40006  
+
+HTTP Server:  
