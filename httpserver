@@ -1,2 +1,11 @@
 #!/bin/bash
-python3 httpserver.py -p $2 -o $4
+# usage: ./httpserver -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com
+port=$2
+origin=$4
+httpserver() {
+    # python3 httpserver.py -p $port -o $origin
+    command="python3 httpserver.py -p $port -o $origin"
+    nohup $command &>/dev/null &
+    echo "python3 httpserver.py -p $port -o $origin"
+}
+httpserver

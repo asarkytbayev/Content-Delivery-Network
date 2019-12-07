@@ -28,28 +28,34 @@ if os.path.isdir(cache_dir) == False:
 
 # team 6 port: 40006
 port = int(argv[2])
-# print("port: {}".format(port))
 
 # origin's ip: "54.158.114.217" 
 origin_ip = socket.gethostbyname(argv[4])
-# print("origin ip: {}".format(origin_ip))
 
 # http connection with the origin
 conn = http.client.HTTPConnection(origin_ip) 
 
-# current cache size in bytes. limit 10Mb - 10_000_000 bytes
-cache_size_current = 0
-
-# limit for the cache size
-cache_threshold = 9_000_000.0
+# hashtable: title -> size in bytes
+cache_sizes = {} 
 
 # hashtable: title -> count - perfect - we do not delete anything from it
 cache_lfu_perfect = {} 
 
-cache_flu_present = set()
+cache_lfu_present = set()
 
-# hashtable: title -> size in bytes
-cache_sizes = {} 
+# current cache size in bytes. limit 10Mb - 10_000_000 bytes
+cache_size_current = 0
+for dir_path, dir_names, file_names in os.walk(cache_dir):
+    for f_ in file_names:
+        fp = os.path.join(dir_path, f_)
+        cache_sizes[f_] = os.path.getsize(fp)
+        cache_lfu_perfect[f_] = 1
+        cache_lfu_present.add(f_)
+        cache_size_current += os.path.getsize(fp)
+
+
+# limit for the cache size
+cache_threshold = 9_000_000.0
 
 # subclasses BaseHTTPRequestHandler
 class HttpServer(BaseHTTPRequestHandler):
@@ -65,14 +71,14 @@ class HttpServer(BaseHTTPRequestHandler):
             least_used = ""
             frequency = maxsize
             # for key, value in cache_lfu_perfect.items():
-            for key in cache_flu_present:
+            for key in cache_lfu_present:
                 value = cache_lfu_perfect[key]
                 if value < frequency:
                     least_used = key
                     frequency = value
             # delete the file, remove from hashtable _present and update the current cache size
             os.remove(cache_dir+least_used)
-            cache_flu_present.remove(least_used)
+            cache_lfu_present.remove(least_used)
             # cache_lfu_perfect.pop(least_used)
             memory_delta = cache_sizes[least_used]
             cache_size_current -= memory_delta
@@ -89,14 +95,15 @@ class HttpServer(BaseHTTPRequestHandler):
         try: # checks if file is cached
             file_to_open = open(cache_dir+title, "rb")
             data_to_send = file_to_open.read()
+            if cache_lfu_perfect.get(title) == None:
+                cache_lfu_perfect[title] = 0
             cache_lfu_perfect[title] += 1
-            cache_flu_present.add(title)
+            cache_lfu_present.add(title)
             self.send_response(200)
         except IOError: # file not cached - fetches from origin
             conn.request("GET", self.path)
             response = conn.getresponse()
             data_to_send = response.read()
-            # print(response.status, response.reason)
 
             # origin does not contain the file
             if response.status == 404: 
@@ -126,7 +133,7 @@ class HttpServer(BaseHTTPRequestHandler):
                 else:
                     cache_lfu_perfect[title] = 1
                 
-                cache_flu_present.add(title)
+                cache_lfu_present.add(title)
                 self.send_response(200)
             
                 

@@ -1,1 +1,15 @@
 #!/bin/bash
+# usage: ./deployCDN -p <port> -o <origin> -n <name> -u <username> -i <keyfile>
+# usage: ./deployCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem 
+scp -i ${10} httpserver.py httpserver Makefile $8@ec2-3-92-59-2.compute-1.amazonaws.com: 
+scp -i ${10} httpserver.py httpserver Makefile $8@ec2-54-213-74-38.us-west-2.compute.amazonaws.com:
+scp -i ${10} httpserver.py httpserver Makefile $8@ec2-13-209-67-180.ap-northeast-2.compute.amazonaws.com:
+scp -i ${10} httpserver.py httpserver Makefile $8@ec2-35-182-244-184.ca-central-1.compute.amazonaws.com:
+scp -i ${10} httpserver.py httpserver Makefile $8@ec2-54-93-225-118.eu-central-1.compute.amazonaws.com:
+
+ssh -i ${10} $8@ec2-54-213-74-38.us-west-2.compute.amazonaws.com "make httpserver; exit"
+ssh -i ${10} $8@ec2-3-92-59-2.compute-1.amazonaws.com "make httpserver; exit"
+ssh -i ${10} $8@ec2-54-213-74-38.us-west-2.compute.amazonaws.com "make httpserver; exit"
+ssh -i ${10} $8@ec2-13-209-67-180.ap-northeast-2.compute.amazonaws.com "make httpserver; exit"
+ssh -i ${10} $8@ec2-35-182-244-184.ca-central-1.compute.amazonaws.com "make httpserver; exit"
+ssh -i ${10} $8@ec2-54-93-225-118.eu-central-1.compute.amazonaws.com "make httpserver; exit"

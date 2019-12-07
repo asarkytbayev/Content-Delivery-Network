@@ -1,1 +1,30 @@
 #!/bin/bash
+# usage: ./deployCDN -p <port> -o <origin> -n <name> -u <username> -i <keyfile>
+# usage: ./deployCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem 
+# func_fork1() {
+#     ssh -i ${10} $8@ec2-54-213-74-38.us-west-2.compute.amazonaws.com "./httpserver -p $2 -o $4"    
+# }
+# func_fork2() {
+#     ssh -i ${10} $8@ec2-3-92-59-2.compute-1.amazonaws.com "./httpserver -p $2 -o $4"
+# }
+# func_fork3() {
+#     ssh -i ${10} $8@ec2-13-209-67-180.ap-northeast-2.compute.amazonaws.com "./httpserver -p $2 -o $4"
+# }
+# func_fork4() {
+#     ssh -i ${10} $8@ec2-35-182-244-184.ca-central-1.compute.amazonaws.com "./httpserver -p $2 -o $4"
+# }
+# func_fork5() {
+#     ssh -i ${10} $8@ec2-54-93-225-118.eu-central-1.compute.amazonaws.com "./httpserver -p $2 -o $4" 
+# }
+# func_fork1 &
+# func_fork2 &
+# func_fork3 &
+# func_fork4 &
+# func_fork5 &
+echo "*******START*******"
+ssh -i ${10} $8@ec2-54-213-74-38.us-west-2.compute.amazonaws.com "./httpserver -p $2 -o $4"
+ssh -i ${10} $8@ec2-3-92-59-2.compute-1.amazonaws.com "./httpserver -p $2 -o $4"
+ssh -i ${10} $8@ec2-13-209-67-180.ap-northeast-2.compute.amazonaws.com "./httpserver -p $2 -o $4"
+ssh -i ${10} $8@ec2-35-182-244-184.ca-central-1.compute.amazonaws.com "./httpserver -p $2 -o $4"
+ssh -i ${10} $8@ec2-54-93-225-118.eu-central-1.compute.amazonaws.com "./httpserver -p $2 -o $4"
+echo "*****END******"
