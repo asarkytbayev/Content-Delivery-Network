@@ -6,6 +6,5 @@ httpserver() {
     # python3 httpserver.py -p $port -o $origin
     command="python3 httpserver.py -p $port -o $origin"
     nohup $command &>/dev/null &
-    echo "python3 httpserver.py -p $port -o $origin"
 }
 httpserver

@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: ./deployCDN -p <port> -o <origin> -n <name> -u <username> -i <keyfile>
+# usage: ./stopCDN -p <port> -o <origin> -n <name> -u <username> -i <keyfile>
 # usage: ./stopCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem 
 
 ssh -i ${10} $8@ec2-54-213-74-38.us-west-2.compute.amazonaws.com "pkill -f httpserver.py; exit"

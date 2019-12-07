@@ -13,7 +13,8 @@ ip_lookup uses the api to lookup the geolocation and saves them to a file which 
 and performs the required calculations.  
 I use the https://www.geeksforgeeks.org/haversine-formula-to-find-distance-between-two-points-on-a-sphere/  
 geeksforgeeks website as a reference for doing the math. My code maps client to the closest ec2 node based  
-on this distance.  
+on this distance. A better approach would be to use dynamic measurements, like pinging. Geolocation does 
+not directly translate to the shortest distance through the cables or take traffic into account.  
   
 References:  
 1. https://www.binarytides.com/dns-query-code-in-c-with-linux-sockets/  
@@ -35,6 +36,10 @@ $ dig cs5700cdn.example.com @cs5700cndproject.ccs.neu.edu -p 40006
 -----------------------------------------------------------------------------------------------------------------  
 HTTP Server:  
 This http server uses simple LFU (least frequently used) algorithm for caching.  
+It's relatively straightforward to implement. A better approach would be to implement and test  
+Perfect-LFU, In-Cache-LFU, LRU and GD-Size - all 4 algorithms from [4].  
+In addition, it's best to precompute the frequency based on the zipf distribution and predownload  
+files which would result in optimal performance.  
 
 Required files - place them in the same directory:
 1. httpserver.py
