@@ -160,16 +160,21 @@ void map2ec2node(unsigned char *answer_ip, const char *client_ip) {
             getline(ip_file, line);
             float lng = atof(line.c_str());
 
+            
+
             // use haversine formula to calculate the distance between 2 lat-lng points
             float min_distance = numeric_limits<float>::max();
             int index = 0;
             for (int i = 0; i < 5; ++i) {
                 float current_distance = haversine(lat, lng, ec2nodes_coords[i][0], ec2nodes_coords[i][1]);
+                
                 if (min_distance > current_distance) {
                     min_distance = current_distance;
                     index = i;
                 }
             }
+
+            
 
             ip_parts[0] = ec2nodes_ip[index][0];
             ip_parts[1] = ec2nodes_ip[index][1];
@@ -180,6 +185,8 @@ void map2ec2node(unsigned char *answer_ip, const char *client_ip) {
             ip_ec2node[ip24] = to_string(ec2nodes_ip[index][0]) + "." + to_string(ec2nodes_ip[index][1]) + "." + to_string(ec2nodes_ip[index][2]) + "." + to_string(ec2nodes_ip[index][3]);
         }
     }
+
+    
 
     *(answer_ip) = ip_parts[0];
     *(answer_ip+1) = ip_parts[1];
@@ -234,6 +241,8 @@ size_t construct_response(unsigned char *buffer_in, unsigned char *buffer_out, c
 
 void process_query(void) {
 
+    
+
     char client_ip[INET_ADDRSTRLEN];
 
     unsigned char buffer_in[MAX_DNS_SIZE];
@@ -247,6 +256,11 @@ void process_query(void) {
         perror("recvfrom");
         exit(1);
     }
+
+    inet_ntop(client_addr.ss_family, get_in_addr((struct sockaddr *)&client_addr), client_ip, sizeof(client_ip));
+
+    
+    // buf[bytes_received] = '\0';
 
     unsigned char buffer_out[MAX_DNS_SIZE];
     size_t message_len = construct_response(buffer_in, buffer_out, client_ip);
@@ -262,6 +276,7 @@ void process_query(void) {
         exit(1);
     }
 
+    
 }
 
 
