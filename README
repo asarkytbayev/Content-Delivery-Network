@@ -1,19 +1,67 @@
 DNS Server:  
 
-For this milestone, I've implemented a basic DNS server. The code is going to be tested  
-out using the url cs5700.example.com. I wasn't able to find this website, so my DNS server  
-simple sets the qr = 1, indicating a response, aa = 1, meaning that my server is authoratitive,  
-and finally rcode = 3, which means that domain doesn't exist.  
+Required files - place them in the same directory on the cs5700cdnproject.ccs.neu.edu machine:    
+1. dnsserver.cpp
+2. dnsserver.h
+3. main.cpp
+4. ip_lookup.py
+5. Makefile
+
+For the final submission, I've added a functionality of mapping based on geolocation.  
+I've used the website https://geo.ipify.org/ and get the longitude and the latitude.
+ip_lookup uses the api to lookup the geolocation and saves them to a file which dnsserver.cpp reads  
+and performs the required calculations.  
+I use the https://www.geeksforgeeks.org/haversine-formula-to-find-distance-between-two-points-on-a-sphere/  
+geeksforgeeks website as a reference for doing the math. My code maps client to the closest ec2 node based  
+on this distance.  
   
 References:  
-1. https://www.binarytides.com/dns-query-code-in-c-with-linux-sockets/
-2. https://beej.us/guide/bgnet/html/#datagram  
-3. https://www.youtube.com/watch?v=ViTAg8YGI5Q  
+1. https://www.binarytides.com/dns-query-code-in-c-with-linux-sockets/  
+2. https://beej.us/guide/bgnet/html/#datagram   
+3. https://www.youtube.com/watch?v=ViTAg8YGI5Q   
+4. https://geo.ipify.org/   
+5. https://www.geeksforgeeks.org/haversine-formula-to-find-distance-between-two-points-on-a-sphere/  
   
 How to run the server:  
-./dnsserver -p 40006 -n url  
-  
+$ make dnsserver
+$ ./dnsserver -p port -n name  
+Example:  
+$ ./dnsserver -p 40006 -n cs5700cdn.example.com
 How to test:  
-dig cs5700cdn.example.com @192.168.0.118 -p 40006  
-
+$ dig cs5700cdn.example.com @cs5700cndproject.ccs.neu.edu -p 40006  
+-----------------------------------------------------------------------------------------------------------------  
+-----------------------------------------------------------------------------------------------------------------  
+-----------------------------------------------------------------------------------------------------------------  
+-----------------------------------------------------------------------------------------------------------------  
 HTTP Server:  
+This http server uses simple LFU (least frequently used) algorithm for caching.  
+
+Required files - place them in the same directory:
+1. httpserver.py
+2. httpserver
+3. Makefile
+4. deployCDN
+5. runCDN
+6. stopCDN
+  
+References:  
+1. https://stackoverflow.com/questions/1392413/calculating-a-directorys-size-using-python  
+2. https://www.youtube.com/watch?v=hFNZ6kdBgO0  
+3. https://www.youtube.com/watch?v=DIPZoZheMTo&t=308s  
+4. http://pages.cs.wisc.edu/~cao/papers/zipf-implication/node7.html  
+
+I tested it out using wget -O output.html http://ec2-54-213-74-38.us-west-2.compute.amazonaws.com:40006/w/index.php?title=Albert_Alcibiades_Margrave_of_Brandenburg-Kulmbach
+from the cs5700cdnproject.ccs.neu.edu.
+  
+How to run:  
+$ make httpserver  
+$ ./httpserver -p port -o origin  
+Example:  
+$ ./httpserver -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com  
+  
+How to run deploy|start|stopCDN:  
+$ make CDN  
+$ ./deployCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem  
+$ ./runCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem  
+$ ./stopCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem  
+  

@@ -13,6 +13,8 @@ CXXFLAGS = -std=c++11
 
 all: deployCDN runCDN stopCDN dnsserver httpserver
 
+CDN: deployCDN runCDN stopCDN
+
 deployCDN:
 	chmod +x deployCDN
 

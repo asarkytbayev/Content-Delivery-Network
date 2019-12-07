@@ -1,3 +1,10 @@
+#
+# CS5700 Fall 2019
+# Project 5: Roll Your Own CDN
+# @author Azamat Sarkytbayev
+# NU ID: 001873077
+#
+
 try:
     from urllib.request import urlopen
 except ImportError:
