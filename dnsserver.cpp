@@ -132,7 +132,7 @@ void map2ec2node(unsigned char *answer_ip, const char *client_ip) {
         while (getline(strm, ip_part, '.')) {
             ip_parts[index++] = stoi(ip_part);
         }
-        printf("mapping exists: directing client to %s\n", ec2node_ip.c_str());
+        
     } else { // if mapping doesn't exist - query the api / if out of queries, return default
         // to query the api, call the python script
         // it saves lat, lng and ip to a file
@@ -148,7 +148,7 @@ void map2ec2node(unsigned char *answer_ip, const char *client_ip) {
         // TODO - run out of queries
         if (line == "ERROR") {
             // - return virginia server ip by default
-            printf("exceeded the quota\n");
+            
             ip_parts[0] = 3U;
             ip_parts[1] = 92U;
             ip_parts[2] = 59U;
@@ -160,21 +160,16 @@ void map2ec2node(unsigned char *answer_ip, const char *client_ip) {
             getline(ip_file, line);
             float lng = atof(line.c_str());
 
-            printf("%s: (lat, lng): (%.1f,%.1f)\n", client_ip, lat, lng);
-
             // use haversine formula to calculate the distance between 2 lat-lng points
             float min_distance = numeric_limits<float>::max();
             int index = 0;
             for (int i = 0; i < 5; ++i) {
                 float current_distance = haversine(lat, lng, ec2nodes_coords[i][0], ec2nodes_coords[i][1]);
-                printf("distance: %f\n", current_distance);
                 if (min_distance > current_distance) {
                     min_distance = current_distance;
                     index = i;
                 }
             }
-
-            printf("new entry: %s\n", ec2nodes_ipname[index]);
 
             ip_parts[0] = ec2nodes_ip[index][0];
             ip_parts[1] = ec2nodes_ip[index][1];
@@ -185,8 +180,6 @@ void map2ec2node(unsigned char *answer_ip, const char *client_ip) {
             ip_ec2node[ip24] = to_string(ec2nodes_ip[index][0]) + "." + to_string(ec2nodes_ip[index][1]) + "." + to_string(ec2nodes_ip[index][2]) + "." + to_string(ec2nodes_ip[index][3]);
         }
     }
-
-    printf("**************send out: %u.%u.%u.%d*************\n", ip_parts[0], ip_parts[1], ip_parts[2], ip_parts[3]);
 
     *(answer_ip) = ip_parts[0];
     *(answer_ip+1) = ip_parts[1];
@@ -241,8 +234,6 @@ size_t construct_response(unsigned char *buffer_in, unsigned char *buffer_out, c
 
 void process_query(void) {
 
-    fprintf(stderr, "\n\n\nserver: waiting to recvfrom...\n");
-
     char client_ip[INET_ADDRSTRLEN];
 
     unsigned char buffer_in[MAX_DNS_SIZE];
@@ -256,12 +247,6 @@ void process_query(void) {
         perror("recvfrom");
         exit(1);
     }
-
-    fprintf(stderr, "server: got packet from %s\n",
-            inet_ntop(client_addr.ss_family, get_in_addr((struct sockaddr *)&client_addr), client_ip, sizeof(client_ip)));
-
-    fprintf(stderr, "server: packet is %ld bytes long\n", bytes_received);
-    // buf[bytes_received] = '\0';
 
     unsigned char buffer_out[MAX_DNS_SIZE];
     size_t message_len = construct_response(buffer_in, buffer_out, client_ip);
@@ -277,7 +262,6 @@ void process_query(void) {
         exit(1);
     }
 
-    printf("server: sent %ld bytes to %s\n\n\n", bytes_sent, client_ip);
 }
 
 
