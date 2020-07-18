@@ -1,72 +1,26 @@
-DNS Server:  
+# [Content Delivery Network]((https://course.ccs.neu.edu/cs5700f19/project5.html)): A network which serves Wikipedia pages efficiently to clients around the world.
+Class: [CS5700. Network Fundamentals](http://catalog.northeastern.edu/search/?P=CS%205700)
 
-Required files - place them in the same directory on the cs5700cdnproject.ccs.neu.edu machine:    
-1. dnsserver.cpp
-2. dnsserver.h
-3. main.cpp
-4. ip_lookup.py
-5. Makefile
+## Table of Contents:
+* [Overview](#overview)
+* [DNS Server](#dns)
+* [HTTP Server](#httpserver)
+* [Discussion](*discussion)
 
-For the final submission, I've added a functionality of mapping based on geolocation.  
-I've used the website https://geo.ipify.org/ and get the longitude and the latitude.
-ip_lookup uses the api to lookup the geolocation and saves them to a file which dnsserver.cpp reads  
-and performs the required calculations.  
-I use the https://www.geeksforgeeks.org/haversine-formula-to-find-distance-between-two-points-on-a-sphere/  
-geeksforgeeks website as a reference for doing the math. My code maps client to the closest ec2 node based  
-on this distance. A better approach would be to use dynamic measurements, like pinging. Geolocation does 
-not directly translate to the shortest distance through the cables or take traffic into account.  
-  
-References:  
-1. https://www.binarytides.com/dns-query-code-in-c-with-linux-sockets/  
-2. https://beej.us/guide/bgnet/html/#datagram   
-3. https://www.youtube.com/watch?v=ViTAg8YGI5Q   
-4. https://geo.ipify.org/   
-5. https://www.geeksforgeeks.org/haversine-formula-to-find-distance-between-two-points-on-a-sphere/  
-  
-How to run the server:  
-$ make dnsserver
-$ ./dnsserver -p port -n name  
-Example:  
-$ ./dnsserver -p 40006 -n cs5700cdn.example.com
-How to test:  
-$ dig cs5700cdn.example.com @cs5700cndproject.ccs.neu.edu -p 40006  
------------------------------------------------------------------------------------------------------------------  
------------------------------------------------------------------------------------------------------------------  
------------------------------------------------------------------------------------------------------------------  
------------------------------------------------------------------------------------------------------------------  
-HTTP Server:  
-This http server uses simple LFU (least frequently used) algorithm for caching.  
-It's relatively straightforward to implement. A better approach would be to implement and test  
-Perfect-LFU, In-Cache-LFU, LRU and GD-Size - all 4 algorithms from [4].  
-In addition, it's best to precompute the frequency based on the zipf distribution and predownload  
-files which would result in optimal performance.  
 
-Required files - place them in the same directory:
-1. httpserver.py
-2. httpserver
-3. Makefile
-4. deployCDN
-5. runCDN
-6. stopCDN
-  
-References:  
-1. https://stackoverflow.com/questions/1392413/calculating-a-directorys-size-using-python  
-2. https://www.youtube.com/watch?v=hFNZ6kdBgO0  
-3. https://www.youtube.com/watch?v=DIPZoZheMTo&t=308s  
-4. http://pages.cs.wisc.edu/~cao/papers/zipf-implication/node7.html  
+## Overview
+The task was to build a Content Delivery Network which would result in fastest download times of Wikipedia pages, using Amazon EC2 hosts for clients around the globe.  
 
-I tested it out using wget -O output.html http://ec2-54-213-74-38.us-west-2.compute.amazonaws.com:40006/w/index.php?title=Albert_Alcibiades_Margrave_of_Brandenburg-Kulmbach
-from the cs5700cdnproject.ccs.neu.edu.
-  
-How to run:  
-$ make httpserver  
-$ ./httpserver -p port -o origin  
-Example:  
-$ ./httpserver -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com  
-  
-How to run deploy|start|stopCDN:  
-$ make CDN  
-$ ./deployCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem  
-$ ./runCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem  
-$ ./stopCDN -p 40006 -o ec2-54-158-114-217.compute-1.amazonaws.com -n cs5700cdn.example.com -u team-6 -i team-6.pem  
-  
+## DNS Server
+DNS server runs at cs5700cdnproject.ccs.neu.edu and listen to queries for cs5700cdn.example.com. It directs the clients to the closest HTTP server by distance, by calling ip_config script. External website https://geo.ipify.org/ was used to get the geolocation of the clients and write information to a file, which DNS server would read and perform distance calculations.  
+
+## HTTP Server
+HTTP server runs and gets a request for a Wikipedia page and returns it. It uses LFU (least frequently used) algorithm for caching the pages locally, with a 10MB limit on a machine.  
+
+## Results
+Top CDN of the class - lowest average download time of Wikipedia pages.  
+
+## Discussion
+A better approach for a DNS server would be to use dynamic measurements, like pinging. Geolocation does not directly translate to the shortest distance through the cables or take traffic into account.  
+For HTTP servers better approach would be to implement and test  
+Perfect-LFU, In-Cache-LFU, LRU and GD-Size. In addition, it's best to precompute the frequency based on the zipf distribution and predownload  files which would result in optimal performance.
