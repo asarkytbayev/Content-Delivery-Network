@@ -3,8 +3,8 @@ Class: [CS5700. Network Fundamentals](http://catalog.northeastern.edu/search/?P=
 
 ## Table of Contents:
 * [Overview](#overview)
-* [DNS Server](#dns)
-* [HTTP Server](#httpserver)
+* [DNS Server](#dns-server)
+* [HTTP Server](#http-server)
 * [Discussion](*discussion)
 
 
