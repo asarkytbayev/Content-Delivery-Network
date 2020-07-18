@@ -22,5 +22,4 @@ Top CDN of the class - lowest average download time of Wikipedia pages.
 
 ## Discussion
 A better approach for a DNS server would be to use dynamic measurements, like pinging. Geolocation does not directly translate to the shortest distance through the cables or take traffic into account.  
-For HTTP servers better approach would be to implement and test  
-Perfect-LFU, In-Cache-LFU, LRU and GD-Size. In addition, it's best to precompute the frequency based on the zipf distribution and predownload  files which would result in optimal performance.
+For HTTP servers better approach would be to implement and test Perfect-LFU, In-Cache-LFU, LRU and GD-Size. In addition, it's best to precompute the frequency based on the zipf distribution and predownload files which would result in optimal performance.
