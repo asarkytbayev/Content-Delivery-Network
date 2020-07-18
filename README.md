@@ -1,4 +1,4 @@
-# [Content Delivery Network]((https://course.ccs.neu.edu/cs5700f19/project5.html)): A network which serves Wikipedia pages efficiently to clients around the world.
+# [Content Delivery Network](https://course.ccs.neu.edu/cs5700f19/project5.html): A network which serves Wikipedia pages efficiently to clients around the world.
 Class: [CS5700. Network Fundamentals](http://catalog.northeastern.edu/search/?P=CS%205700)
 
 ## Table of Contents:
